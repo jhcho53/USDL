@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # A Real-time Pseudo Dense Depth Guided Depth Completion Network (Non-official)
 This repository provides a non-official implementation of the paper: [DenseLiDAR: A Real-time Pseudo Dense Depth Guided Depth Completion Network](https://arxiv.org/pdf/2108.12655)
 > **Jiaqi Gu. et al, DenseLiDAR: A Real-Time Pseudo Dense Depth Guided Depth Completion Network. ICRA 2021**
@@ -166,5 +165,3 @@ If you use our implementation or method in your work, please cite the following
   doi={10.1109/LRA.2021.3060396}}
 ```
 =======
-# USDL
->>>>>>> d6f41a9741723e131db5265d282ea3b3c8022f99
