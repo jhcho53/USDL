@@ -36,7 +36,7 @@ def point_loader(path):
 
 class myImageFloder(data.Dataset):
     def __init__(self, raw_image, raw_lidar, gt_lidar, pseudo_depth_map, pseudo_gt_map, training,
-                 loader=default_loader, ploader = point_loader):
+                 loader=default_loader, ploader=point_loader):
         self.raw_image = raw_image
         self.gt_lidar = gt_lidar
         self.raw_lidar = raw_lidar

@@ -152,9 +152,6 @@ class depthCompletionNew_blockN(nn.Module):
         return block(in_channels,out_channels,bs)
 
     def forward(self, left, sparse2):
-        # No mask is used anymore, so it's removed.
-        
-        # Process the sparse input through the `convS` layers
         inputS_conv = self.convS(sparse2)
         inputS_conv0 = self.convS0(inputS_conv)
         inputS_conv1 = self.convS1(inputS_conv0)
@@ -162,34 +159,36 @@ class depthCompletionNew_blockN(nn.Module):
         inputS_conv3 = self.convS3(inputS_conv2)
         inputS_conv4 = self.convS4(inputS_conv3)
 
-        # Process the left input through the regular layers
         out_conv2 = self.conv2(self.conv1(left))
         out_conv3 = self.conv3_1(self.conv3(out_conv2))
         out_conv4 = self.conv4_1(self.conv4(out_conv3))
         out_conv5 = self.conv5_1(self.conv5(out_conv4))
-        out_conv6 = self.conv6_1(self.conv6(out_conv5)) + inputS_conv4  # Add sparse feature here
+        out_conv6 = self.conv6_1(self.conv6(out_conv5)) + inputS_conv4
 
-        # Predict the normal maps and upsample
         out6 = self.predict_normal6(out_conv6)
         normal6_up = self.upsampled_normal6_to_5(out6)
         out_deconv5 = self.deconv5(out_conv6)
 
-        out5 = self.predict_normal5(out_deconv5 + inputS_conv3)
+        concat5 = adaptative_cat(out_conv5, out_deconv5, normal6_up) + inputS_conv3
+        out5 = self.predict_normal5(concat5)
         normal5_up = self.upsampled_normal5_to_4(out5)
-        out_deconv4 = self.deconv4(out_deconv5)
+        out_deconv4 = self.deconv4(concat5)
 
-        out4 = self.predict_normal4(out_deconv4 + inputS_conv2)
+        concat4 = adaptative_cat(out_conv4, out_deconv4, normal5_up) + inputS_conv2
+        out4 = self.predict_normal4(concat4)
         normal4_up = self.upsampled_normal4_to_3(out4)
-        out_deconv3 = self.deconv3(out_deconv4)
+        out_deconv3 = self.deconv3(concat4)
 
-        out3 = self.predict_normal3(out_deconv3 + inputS_conv1)
+        concat3 = adaptative_cat(out_conv3, out_deconv3, normal4_up) + inputS_conv1
+        out3 = self.predict_normal3(concat3)
         normal3_up = self.upsampled_normal3_to_2(out3)
-        out_deconv2 = self.deconv2(out_deconv3)
+        out_deconv2 = self.deconv2(concat3)
 
-        out2 = self.predict_normal2(out_deconv2 + inputS_conv0)
+        concat2 = adaptative_cat(out_conv2, out_deconv2, normal3_up) + inputS_conv0
+        out2 = self.predict_normal2(concat2)
         normal2 = out2
 
-        normal2 = normal2[:, 1, :, :]
+        normal2 = normal2[:,1,:,:]
         normal2 = normal2.unsqueeze(1)
 
-        return normal2, out_deconv2
+        return normal2

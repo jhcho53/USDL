@@ -12,7 +12,7 @@ class DenseLiDAR(Module):
 
     def forward(self, image, sparse, device):
         # rectified_depth = self.rectification(sparse, pseudo_depth_map)
-        normal2, concat2 = self.DCU(image, sparse)
+        normal2 = self.DCU(image, sparse)
         
         # residual = normal2 - sparse
         # residual = torch.clamp(residual, min=0)
