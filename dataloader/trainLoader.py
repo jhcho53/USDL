@@ -24,7 +24,12 @@ def default_loader(path):
 
 def point_loader(path):
     img = skimage.io.imread(path)
-    depth = img *1.0 / 256.0
+    
+    # If the image has 3 channels, convert it to grayscale
+    if len(img.shape) == 3 and img.shape[2] == 3:
+        img = skimage.color.rgb2gray(img)
+    
+    depth = img * 1.0 / 256.0
     depth = np.reshape(depth, [img.shape[0], img.shape[1], 1]).astype(np.float32)
     return depth
 
