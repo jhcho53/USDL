@@ -33,12 +33,16 @@ def dataloader(filepath, mode='train'):
     seqs = [seq for seq in os.listdir(filepath_ri) if seq.find('sync') > -1]
     left_fold = 'proj_depth/image_02'
     right_fold = 'proj_depth/image_03'
+    left_gt_fold = 'proj_depth/groundtruth/image_02'
+    right_gt_fold = 'proj_depth/groundtruth/image_03'
+    left_velo_fold = 'proj_depth/velodyne_raw/image_02'
+    right_velo_fold = 'proj_depth/velodyne_raw/image_03'
     
     for seq in seqs:
         # raw image
         left_image = os.path.join(filepath_ri, seq, left_fold)
         left_image = [os.path.join(left_image, img) for img in os.listdir(left_image) if is_image_file(img)]
-        left_image.sort()
+        left_image.sort() 
         images = np.append(images, left_image)
 
         right_images = os.path.join(filepath_ri, seq, right_fold)
@@ -47,23 +51,23 @@ def dataloader(filepath, mode='train'):
         images = np.append(images, right_image)
 
         # gt lidar
-        left_gt_lidar = os.path.join(filepath_gl, seq, left_fold)
+        left_gt_lidar = os.path.join(filepath_gl, seq, left_gt_fold)
         left_gt_lidar = [os.path.join(left_gt_lidar, img) for img in os.listdir(left_gt_lidar) if is_image_file(img)]
         left_gt_lidar.sort()
         gt_lidars = np.append(gt_lidars, left_gt_lidar)
 
-        right_gt_lidar = os.path.join(filepath_gl, seq, right_fold)
+        right_gt_lidar = os.path.join(filepath_gl, seq, right_gt_fold)
         right_gt_lidar = [os.path.join(right_gt_lidar, img) for img in os.listdir(right_gt_lidar) if is_image_file(img)]
-        right_gt_lidar.sort()
+        right_gt_lidar.sort() 
         gt_lidars = np.append(gt_lidars, right_gt_lidar)
 
         # raw lidar
-        left_lidar = os.path.join(filepath_rl, seq, left_fold)
+        left_lidar = os.path.join(filepath_rl, seq, left_velo_fold)
         left_lidar = [os.path.join(left_lidar, img) for img in os.listdir(left_lidar) if is_image_file(img)]
         left_lidar.sort()
         lidars = np.append(lidars, left_lidar)
 
-        right_lidar = os.path.join(filepath_rl, seq, right_fold)
+        right_lidar = os.path.join(filepath_rl, seq, right_velo_fold)
         right_lidar = [os.path.join(right_lidar, img) for img in os.listdir(right_lidar) if is_image_file(img)]
         right_lidar.sort()
         lidars = np.append(lidars, right_lidar)
@@ -80,12 +84,12 @@ def dataloader(filepath, mode='train'):
         pseudo_depths = np.append(pseudo_depths, right_pseudo_depth)
 
         # pseudo gt map
-        left_pseudo_gt = os.path.join(filepath_pg, seq, left_fold)
+        left_pseudo_gt = os.path.join(filepath_pg, seq, left_gt_fold)
         left_pseudo_gt = [os.path.join(left_pseudo_gt, img) for img in os.listdir(left_pseudo_gt) if is_image_file(img)]
         left_pseudo_gt.sort()
         pseudo_gts = np.append(pseudo_gts, left_pseudo_gt)
 
-        right_pseudo_gt = os.path.join(filepath_pg, seq, right_fold)
+        right_pseudo_gt = os.path.join(filepath_pg, seq, right_gt_fold)
         right_pseudo_gt = [os.path.join(right_pseudo_gt, img) for img in os.listdir(right_pseudo_gt) if is_image_file(img)]
         right_pseudo_gt.sort()
         pseudo_gts = np.append(pseudo_gts, right_pseudo_gt)
