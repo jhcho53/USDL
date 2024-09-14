@@ -21,7 +21,7 @@ def default_loader(path):
     img = skimage.io.imread(path)
     return img
 
-
+# test
 def point_loader(path):
     img = skimage.io.imread(path)
     
