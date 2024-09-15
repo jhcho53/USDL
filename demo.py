@@ -1,8 +1,3 @@
-"""
-Argument : model path, demo image path, demo sparse LiDAR data path, demo pseudo depth map path, output path
-Example : python demo.py --model_path checkpoint/epoch-5_loss-3.273.tar --image_path demo/demo_image.png --sparse_path demo/demo_velodyne.png --pseudo_depth_map_path demo/demo_pseudo_depth.png --output_path demo/dense_depth_output.png
-"""
-
 import torch
 import torchvision.transforms as transforms
 import cv2
@@ -43,10 +38,9 @@ def save_depth_map(dense_depth, output_path):
     cv2.imwrite(output_path, dense_depth)
 
 
-def main(model_path, image_path, sparse_path, pseudo_depth_map_path, output_path):
+def main(model_path, image_path, sparse_path, output_path):
     image = load_image(image_path)
     sparse = load_another_data(sparse_path)
-    pseudo_depth_map = load_another_data(pseudo_depth_map_path)
 
     model = DenseLiDAR(bs=1).cuda()
     
@@ -56,7 +50,7 @@ def main(model_path, image_path, sparse_path, pseudo_depth_map_path, output_path
     model.eval()
     
     with torch.no_grad():
-        final_dense_depth = model(image, sparse, pseudo_depth_map, 'cuda')
+        final_dense_depth = model(image, sparse, 'cuda')
 
     final_dense_depth = final_dense_depth.cpu()
     save_depth_map(final_dense_depth, output_path)
@@ -68,8 +62,7 @@ if __name__ == "__main__":
     parser.add_argument('--model_path', type=str, default='', help='Path to the pretrained model')
     parser.add_argument('--image_path', type=str, default='demo/demo_image.png', help='Path to the image')
     parser.add_argument('--sparse_path', type=str, default='demo/demo_velodyne.png', help='Path to the sparse LiDAR data')
-    parser.add_argument('--pseudo_depth_map_path', type=str, default='demo/demo_pseudo_depth.png', help='Path to the pseudo depth map')
     parser.add_argument('--output_path', type=str, default='demo/dense_depth_output.png', help='Path to save the final dense depth map')
     args = parser.parse_args()
     
-    main(args.model_path, args.image_path, args.sparse_path, args.pseudo_depth_map_path, args.output_path)
+    main(args.model_path, args.image_path, args.sparse_path, args.output_path)
